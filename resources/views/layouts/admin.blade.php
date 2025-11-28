@@ -21,11 +21,14 @@
         [x-cloak] { display: none !important; }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body class="bg-gray-100 font-sans" x-data="{ sidebarOpen: false }">
     <div class="flex h-screen overflow-hidden">
-        <!-- Sidebar -->
-        <aside class="w-64 bg-gray-800 text-white flex-shrink-0 hidden md:flex flex-col">
-            <div class="p-4 border-b border-gray-700 flex items-center justify-center">
+        <!-- Mobile Sidebar Overlay -->
+        <div x-show="sidebarOpen" @click="sidebarOpen = false" x-transition:enter="transition-opacity ease-linear duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 md:hidden" x-cloak></div>
+
+        <!-- Sidebar (Mobile & Desktop) -->
+        <aside :class="sidebarOpen ? 'translate-x-0 ease-out' : '-translate-x-full ease-in'" class="fixed inset-y-0 left-0 z-50 w-64 bg-gray-800 text-white transition duration-300 transform md:relative md:translate-x-0 md:flex flex-col h-full">
+            <div class="p-4 border-b border-gray-700 flex items-center justify-between md:justify-center">
                 @php
                     $siteLogo = \App\Models\SiteSetting::where('key', 'site_logo')->value('value');
                     $siteName = \App\Models\SiteSetting::where('key', 'site_name')->value('value') ?? 'RisingCare';
@@ -36,6 +39,11 @@
                 @else
                     <span class="text-2xl font-bold text-teal-400">{{ $siteName }}</span>
                 @endif
+                
+                <!-- Mobile Close Button -->
+                <button @click="sidebarOpen = false" class="md:hidden text-gray-400 hover:text-white focus:outline-none">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
             </div>
             
             <div class="flex-1 overflow-y-auto py-4" x-data="{ 
@@ -220,7 +228,7 @@
             <header class="bg-white shadow-sm z-10 md:hidden">
                 <div class="px-4 py-3 flex items-center justify-between">
                     <span class="text-xl font-bold text-teal-600">RisingCare</span>
-                    <button class="text-gray-500 focus:outline-none">
+                    <button @click="sidebarOpen = true" class="text-gray-500 hover:text-teal-600 focus:outline-none">
                         <i class="fas fa-bars text-2xl"></i>
                     </button>
                 </div>

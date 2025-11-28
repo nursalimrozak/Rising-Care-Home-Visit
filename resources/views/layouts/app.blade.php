@@ -59,7 +59,12 @@
                 <div class="hidden md:flex items-center space-x-4">
                     @auth
                         @php
-                            $dashboardRoute = auth()->user()->role == 'customer' ? route('customer.dashboard') : route('admin.dashboard');
+                            $dashboardRoute = route('admin.dashboard');
+                            if(auth()->user()->role == 'customer') {
+                                $dashboardRoute = route('customer.dashboard');
+                            } elseif(auth()->user()->role == 'petugas') {
+                                $dashboardRoute = route('petugas.dashboard');
+                            }
                         @endphp
                         <a href="{{ $dashboardRoute }}" class="flex items-center gap-2 bg-teal-50 text-teal-700 px-5 py-2.5 rounded-full font-medium hover:bg-teal-100 transition">
                             <i class="fas fa-user-circle text-lg"></i>

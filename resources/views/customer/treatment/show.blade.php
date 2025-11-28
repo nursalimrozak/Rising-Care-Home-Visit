@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-6" x-data="{ showProofModal: false, proofImage: '' }">
     <div class="mb-6 flex items-center justify-between">
         <h1 class="text-2xl font-bold text-gray-800">Detail Treatment</h1>
-        <a href="{{ route('customer.packages.show', $booking->packagePurchase->id) }}" class="text-teal-600 hover:text-teal-800 font-medium flex items-center">
+        <a href="{{ route('customer.packages.show', base64_encode($booking->packagePurchase->id)) }}" class="text-teal-600 hover:text-teal-800 font-medium flex items-center">
             <i class="fas fa-arrow-left mr-2"></i> Kembali ke Paket
         </a>
     </div>
