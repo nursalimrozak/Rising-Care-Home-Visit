@@ -10,15 +10,19 @@ return new class extends Migration
     public function up(): void
     {
         // Drop existing foreign key constraint
-        Schema::table('booking_addons', function (Blueprint $table) {
-            $table->dropForeign(['addon_id']);
-        });
+        try {
+            Schema::table('booking_addons', function (Blueprint $table) {
+                $table->dropForeign(['addon_id']);
+            });
+        } catch (\Exception $e) {
+            // Foreign key might not exist, continue
+        }
 
-        // Add new foreign key constraint pointing to service_addons table
+        // Add new foreign key constraint pointing to addons table
         Schema::table('booking_addons', function (Blueprint $table) {
             $table->foreign('addon_id')
                 ->references('id')
-                ->on('service_addons')
+                ->on('addons')
                 ->onDelete('cascade');
         });
     }
