@@ -262,6 +262,9 @@
         </div>
     </div>
 
+    <!-- Global Delete Confirmation Modal -->
+    @include('components.delete-modal')
+
     <script>
         // Auto-dismiss alerts after 3 seconds
         setTimeout(function() {

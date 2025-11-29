@@ -74,12 +74,12 @@
                             <button type="button" onclick="openEditModal({{ $item->id }})" class="text-blue-600 hover:text-blue-900">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <form id="deleteForm{{ $item->id }}" action="{{ route('admin.landing.testimonials.destroy', $item) }}" method="POST" class="inline">
+                            <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $item->id }}', '{{ $item->customer_name }}', 'Hapus Testimonial')" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <form id="deleteForm{{ $item->id }}" action="{{ route('admin.landing.testimonials.destroy', $item) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="if(confirm('Yakin ingin menghapus?')) document.getElementById('deleteForm{{ $item->id }}').submit()" class="text-red-600 hover:text-red-900">
-                                    <i class="fas fa-trash"></i>
-                                </button>
                             </form>
                         </div>
                     </td>

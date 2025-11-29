@@ -67,12 +67,12 @@
                             <button type="button" onclick="openEditModal({{ $popup->id }})" class="text-blue-600 hover:text-blue-900">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <form id="deleteForm{{ $popup->id }}" action="{{ route('admin.landing.popups.destroy', $popup) }}" method="POST" class="inline">
+                            <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $popup->id }}', '{{ $popup->title }}', 'Hapus Pop-up')" class="text-red-600 hover:text-red-900">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <form id="deleteForm{{ $popup->id }}" action="{{ route('admin.landing.popups.destroy', $popup) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="if(confirm('Yakin ingin menghapus pop-up ini?')) document.getElementById('deleteForm{{ $popup->id }}').submit()" class="text-red-600 hover:text-red-900">
-                                    <i class="fas fa-trash"></i>
-                                </button>
                             </form>
                         </div>
                     </td>
