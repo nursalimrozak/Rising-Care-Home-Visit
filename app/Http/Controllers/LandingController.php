@@ -30,6 +30,9 @@ class LandingController extends Controller
             
         $articles = LandingArticle::latest()->limit(3)->get();
 
+        // Get active pop-ups (max 3)
+        $popups = \App\Models\LandingPopup::active()->ordered()->limit(3)->get();
+
         $sectionSettings = \App\Models\SiteSetting::whereIn('key', [
             'landing_services_title', 'landing_services_subtitle',
             'landing_how_we_work_title', 'landing_how_we_work_subtitle',
@@ -45,7 +48,8 @@ class LandingController extends Controller
             'howWeWork',
             'testimonials',
             'articles',
-            'sectionSettings'
+            'sectionSettings',
+            'popups'
         ));
     }
 

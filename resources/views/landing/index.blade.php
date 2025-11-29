@@ -454,4 +454,60 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </section>
+
+<!-- Pop-up Modal -->
+@if($popups->count() > 0)
+<div x-data="{ showPopup: true }" x-show="showPopup" x-cloak class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background-color: rgba(0, 0, 0, 0.75);">
+    <div @click.away="showPopup = false" class="relative bg-white rounded-2xl shadow-2xl max-w-3xl w-full max-h-[90vh] overflow-hidden">
+        <!-- Close Button -->
+        <button @click="showPopup = false" class="absolute top-4 right-4 z-10 bg-white/90 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center shadow-lg transition">
+            <i class="fas fa-times text-xl"></i>
+        </button>
+
+        <!-- Swiper Container -->
+        <div class="swiper popupSwiper">
+            <div class="swiper-wrapper">
+                @foreach($popups as $popup)
+                <div class="swiper-slide">
+                    @if($popup->link)
+                        <a href="{{ $popup->link }}" target="_blank" class="block">
+                            <img src="{{ asset('storage/' . $popup->image) }}" alt="{{ $popup->title }}" class="w-full h-auto object-contain max-h-[80vh]">
+                        </a>
+                    @else
+                        <img src="{{ asset('storage/' . $popup->image) }}" alt="{{ $popup->title }}" class="w-full h-auto object-contain max-h-[80vh]">
+                    @endif
+                </div>
+                @endforeach
+            </div>
+
+            @if($popups->count() > 1)
+            <!-- Navigation Arrows -->
+            <div class="swiper-button-prev !text-white !w-10 !h-10 !bg-teal-600 !rounded-full after:!text-sm"></div>
+            <div class="swiper-button-next !text-white !w-10 !h-10 !bg-teal-600 !rounded-full after:!text-sm"></div>
+
+            <!-- Pagination Dots -->
+            <div class="swiper-pagination !bottom-4"></div>
+            @endif
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    @if($popups->count() > 1)
+    new Swiper('.popupSwiper', {
+        loop: true,
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+    });
+    @endif
+});
+</script>
+@endif
 @endsection

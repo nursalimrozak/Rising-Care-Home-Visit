@@ -134,6 +134,9 @@
                             <a href="{{ route('admin.landing.hero-slides.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.landing.hero-slides.*') ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
                                 <i class="fas fa-images mr-3 w-5 text-center"></i> Hero Slides
                             </a>
+                            <a href="{{ route('admin.landing.popups.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.landing.popups.*') ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
+                                <i class="fas fa-window-restore mr-3 w-5 text-center"></i> Pop-ups
+                            </a>
                             <a href="{{ route('admin.landing.about.index') }}" class="group flex items-center px-2 py-2 text-sm font-medium rounded-md {{ request()->routeIs('admin.landing.about.*') ? 'text-white bg-gray-800' : 'text-gray-400 hover:text-white hover:bg-gray-800' }}">
                                 <i class="fas fa-info-circle mr-3 w-5 text-center"></i> About Section
                             </a>

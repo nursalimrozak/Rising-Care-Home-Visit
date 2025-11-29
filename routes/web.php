@@ -99,6 +99,8 @@ Route::middleware(['auth', 'role:superadmin,admin_staff'])->prefix('admin')->nam
     // Landing Page CMS
     Route::prefix('landing')->name('landing.')->group(function () {
         Route::resource('hero-slides', \App\Http\Controllers\Admin\HeroSlideController::class);
+        Route::resource('popups', \App\Http\Controllers\Admin\LandingPopupController::class);
+        Route::post('popups/{popup}/toggle-active', [\App\Http\Controllers\Admin\LandingPopupController::class, 'toggleActive'])->name('popups.toggle-active');
         Route::resource('services-highlight', \App\Http\Controllers\Admin\ServicesHighlightController::class);
         Route::resource('how-we-work', \App\Http\Controllers\Admin\HowWeWorkController::class);
         Route::resource('testimonials', \App\Http\Controllers\Admin\TestimonialController::class);
