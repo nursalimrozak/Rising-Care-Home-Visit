@@ -42,11 +42,11 @@
                         <button onclick="editAddon({{ $addon->id }}, '{{ addslashes($addon->name) }}', '{{ addslashes($addon->description) }}', {{ $addon->price }}, {{ $addon->is_active ? 'true' : 'false' }})" class="text-blue-600 hover:text-blue-900">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <form id="deleteForm{{ $addon->id }}" action="{{ route('admin.service-addons.destroy', $addon) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" onclick="openDeleteModal('deleteForm{{ $addon->id }}', '{{ addslashes($addon->name) }}')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
-                        </form>
+                            <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $addon->id }}', '{{ addslashes($addon->name) }}', 'Hapus Add-on')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                            <form id="deleteForm{{ $addon->id }}" action="{{ route('admin.service-addons.destroy', $addon) }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                     </div>
                 </td>
             </tr>
@@ -127,7 +127,7 @@
     </div>
 </div>
 
-@include('components.admin.delete-modal')
+
 
 <script>
     function openModal(modalId) {

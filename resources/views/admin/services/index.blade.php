@@ -63,11 +63,11 @@
                     <td class="px-6 py-4 text-sm font-medium">
                         <div class="flex space-x-3">
                             <button type="button" onclick="openEditModal({{ $service->id }})" class="text-blue-600 hover:text-blue-900"><i class="fas fa-edit"></i></button>
-                            <form id="deleteForm{{ $service->id }}" action="{{ route('admin.services.destroy', $service) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="button" onclick="openDeleteModal('deleteForm{{ $service->id }}', '{{ addslashes($service->name) }}')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
-                            </form>
+                                <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $service->id }}', '{{ addslashes($service->name) }}', 'Hapus Layanan')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                                    <form id="deleteForm{{ $service->id }}" action="{{ route('admin.services.destroy', $service) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                         </div>
                     </td>
                 </tr>
@@ -190,7 +190,7 @@
     </div>
 </div>
 
-@include('components.admin.delete-modal')
+
 
 <script>
 function openEditModal(serviceId) {

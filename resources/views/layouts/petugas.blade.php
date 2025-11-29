@@ -205,5 +205,6 @@
         </div>
     </div>
     @endif
+    @include('components.admin.delete-modal')
 </body>
 </html>

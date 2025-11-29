@@ -88,11 +88,11 @@
                                 <a href="{{ route('admin.users.show', $staff) }}" class="text-teal-600 hover:text-teal-900" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                 <a href="{{ route('admin.users.edit', $staff) }}" class="text-blue-600 hover:text-blue-900" title="Edit"><i class="fas fa-edit"></i></a>
                                 @if(auth()->id() !== $staff->id)
-                                <form id="deleteForm{{ $staff->id }}" action="{{ route('admin.users.destroy', $staff) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" onclick="openDeleteModal('deleteForm{{ $staff->id }}', '{{ addslashes($staff->name) }}')" class="text-red-600 hover:text-red-900" title="Hapus"><i class="fas fa-trash"></i></button>
-                                </form>
+                                <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $staff->id }}', '{{ addslashes($staff->name) }}', 'Hapus Staff')" class="text-red-600 hover:text-red-900" title="Hapus"><i class="fas fa-trash"></i></button>
+                                    <form id="deleteForm{{ $staff->id }}" action="{{ route('admin.users.destroy', $staff) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                                 @endif
                             </div>
                         </td>
@@ -172,11 +172,11 @@
                             <div class="flex space-x-3">
                                 <a href="{{ route('admin.users.show', $customer) }}" class="text-teal-600 hover:text-teal-900" title="Lihat Detail"><i class="fas fa-eye"></i></a>
                                 <a href="{{ route('admin.users.edit', $customer) }}" class="text-blue-600 hover:text-blue-900" title="Edit"><i class="fas fa-edit"></i></a>
-                                <form id="deleteForm{{ $customer->id }}" action="{{ route('admin.users.destroy', $customer) }}" method="POST" class="inline">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="button" onclick="openDeleteModal('deleteForm{{ $customer->id }}', '{{ addslashes($customer->name) }}')" class="text-red-600 hover:text-red-900" title="Hapus"><i class="fas fa-trash"></i></button>
-                                </form>
+                                <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $customer->id }}', '{{ addslashes($customer->name) }}', 'Hapus Customer')" class="text-red-600 hover:text-red-900" title="Hapus"><i class="fas fa-trash"></i></button>
+                                    <form id="deleteForm{{ $customer->id }}" action="{{ route('admin.users.destroy', $customer) }}" method="POST" class="hidden">
+                                        @csrf
+                                        @method('DELETE')
+                                    </form>
                             </div>
                         </td>
                     </tr>
@@ -190,7 +190,7 @@
     </div>
 </div>
 
-@include('components.admin.delete-modal')
+
 
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 @endsection

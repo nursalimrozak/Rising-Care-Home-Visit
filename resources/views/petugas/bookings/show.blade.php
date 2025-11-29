@@ -593,12 +593,12 @@
                             <span class="text-xs text-gray-500">x{{ $bookingAddon->quantity }}</span>
                             
                             @if($booking->status == 'pending_payment' || ($booking->payment && $booking->payment->status == 'paid' && $booking->payment->payment_type == 'dp'))
-                            <form action="{{ route('petugas.booking-addons.destroy', $bookingAddon->id) }}" method="POST">
+                            <button type="button" onclick="openGlobalDeleteModal('deleteAddonForm{{ $bookingAddon->id }}', '{{ addslashes($bookingAddon->addon->name) }}', 'Hapus Add-on')" class="text-red-500 hover:text-red-700 text-xs" title="Hapus">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <form id="deleteAddonForm{{ $bookingAddon->id }}" action="{{ route('petugas.booking-addons.destroy', $bookingAddon->id) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-500 hover:text-red-700 text-xs" title="Hapus">
-                                    <i class="fas fa-trash"></i>
-                                </button>
                             </form>
                             @endif
                         </div>

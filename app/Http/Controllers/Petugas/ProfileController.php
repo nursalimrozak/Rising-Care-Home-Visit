@@ -37,8 +37,10 @@ class ProfileController extends Controller
             // Document Validation
             'avatar' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'document_ktp' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'document_sim' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
-            'document_certificate' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'document_kk' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'document_ijazah' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'document_str' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
+            'document_other' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ], [
             'required_with' => 'Kolom :attribute wajib diisi jika memilih jenis pembayaran.',
             'mimes' => 'Format :attribute harus berupa :values.',
@@ -57,8 +59,10 @@ class ProfileController extends Controller
             'account_holder_name' => 'Atas Nama',
             'avatar' => 'Foto Profil',
             'document_ktp' => 'Dokumen KTP',
-            'document_sim' => 'Dokumen SIM',
-            'document_certificate' => 'Sertifikat Keahlian',
+            'document_kk' => 'Kartu Keluarga (KK)',
+            'document_ijazah' => 'Ijazah Terakhir',
+            'document_str' => 'STR',
+            'document_other' => 'Dokumen Lainnya',
         ]);
 
         // Check current password if changing password
@@ -101,7 +105,7 @@ class ProfileController extends Controller
         }
 
         // Handle Document Uploads
-        $documentTypes = ['ktp', 'sim', 'certificate'];
+        $documentTypes = ['ktp', 'kk', 'ijazah', 'str', 'other'];
         foreach ($documentTypes as $type) {
             if ($request->hasFile("document_{$type}")) {
                 $file = $request->file("document_{$type}");

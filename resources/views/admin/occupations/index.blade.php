@@ -58,10 +58,10 @@
                             <button onclick="editOccupation({{ $occupation->id }}, '{{ addslashes($occupation->name) }}', '{{ addslashes($occupation->description) }}', {{ $occupation->membership_id }})" class="text-blue-600 hover:text-blue-900">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <form id="deleteForm{{ $occupation->id }}" action="{{ route('admin.occupations.destroy', $occupation) }}" method="POST" class="inline">
+                            <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $occupation->id }}', '{{ addslashes($occupation->name) }}', 'Hapus Pekerjaan')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                            <form id="deleteForm{{ $occupation->id }}" action="{{ route('admin.occupations.destroy', $occupation) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="button" onclick="openDeleteModal('deleteForm{{ $occupation->id }}', '{{ addslashes($occupation->name) }}')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
                             </form>
                         </div>
                     </td>
@@ -146,7 +146,7 @@
     </div>
 </div>
 
-@include('components.admin.delete-modal')
+
 
 <script>
     function openModal(modalId) {

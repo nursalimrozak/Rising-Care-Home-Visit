@@ -44,11 +44,11 @@
                         <button onclick="editMembership({{ $membership->id }}, '{{ addslashes($membership->name) }}', '{{ addslashes($membership->description) }}', {{ $membership->discount_percentage }})" class="text-blue-600 hover:text-blue-900">
                             <i class="fas fa-edit"></i>
                         </button>
-                        <form id="deleteForm{{ $membership->id }}" action="{{ route('admin.memberships.destroy', $membership) }}" method="POST" class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="button" onclick="openDeleteModal('deleteForm{{ $membership->id }}', '{{ addslashes($membership->name) }}')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
-                        </form>
+                            <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $membership->id }}', '{{ addslashes($membership->name) }}', 'Hapus Membership')" class="text-red-600 hover:text-red-900"><i class="fas fa-trash"></i></button>
+                            <form id="deleteForm{{ $membership->id }}" action="{{ route('admin.memberships.destroy', $membership) }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
                     </div>
                 </td>
             </tr>
@@ -120,7 +120,7 @@
     </div>
 </div>
 
-@include('components.admin.delete-modal')
+
 
 <script>
     function openModal(modalId) {

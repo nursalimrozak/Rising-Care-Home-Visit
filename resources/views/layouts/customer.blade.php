@@ -124,5 +124,6 @@
         closeSidebarButton.addEventListener('click', toggleSidebar);
         sidebarOverlay.addEventListener('click', toggleSidebar);
     </script>
+    @include('components.admin.delete-modal')
 </body>
 </html>

@@ -95,12 +95,12 @@
                                         <button onclick='openEditModal(@json($question))' class="text-blue-600 hover:text-blue-800">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <form id="deleteForm{{ $question->id }}" action="{{ route('admin.health-screening.destroy', $question) }}" method="POST">
+                                        <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $question->id }}', '{{ addslashes($question->question) }}', 'Hapus Pertanyaan')" class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <form id="deleteForm{{ $question->id }}" action="{{ route('admin.health-screening.destroy', $question) }}" method="POST" class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" onclick="openDeleteModal({{ $question->id }}, '{{ addslashes($question->question) }}')" class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
                                         </form>
                                     </div>
                                 </td>
@@ -179,12 +179,12 @@
                                         <button onclick='openEditModal(@json($question))' class="text-blue-600 hover:text-blue-800">
                                             <i class="fas fa-edit"></i>
                                         </button>
-                                        <form id="deleteForm{{ $question->id }}" action="{{ route('admin.health-screening.destroy', $question) }}" method="POST">
+                                        <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $question->id }}', '{{ addslashes($question->question) }}', 'Hapus Pertanyaan')" class="text-red-600 hover:text-red-800">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <form id="deleteForm{{ $question->id }}" action="{{ route('admin.health-screening.destroy', $question) }}" method="POST" class="hidden">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="button" onclick="openDeleteModal({{ $question->id }}, '{{ addslashes($question->question) }}')" class="text-red-600 hover:text-red-800">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
                                         </form>
                                     </div>
                                 </td>
@@ -240,12 +240,12 @@
                                 <button type="button" onclick="openEditCategoryModal({{ json_encode($category) }})" class="text-blue-600 hover:text-blue-800">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <form id="deleteCategoryForm{{ $category->id }}" action="{{ route('admin.health-categories.destroy', $category) }}" method="POST">
+                                <button type="button" onclick="openGlobalDeleteModal('deleteCategoryForm{{ $category->id }}', '{{ addslashes($category->name) }}', 'Hapus Kategori')" class="text-red-600 hover:text-red-800">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <form id="deleteCategoryForm{{ $category->id }}" action="{{ route('admin.health-categories.destroy', $category) }}" method="POST" class="hidden">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="button" onclick="openDeleteCategoryModal({{ $category->id }}, '{{ addslashes($category->name) }}')" class="text-red-600 hover:text-red-800">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
                                 </form>
                             </div>
                         </td>
@@ -454,73 +454,13 @@
     </div>
 </div>
 
-<!-- Delete Question Modal -->
-<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 bg-red-50">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-lg"></i>
-                </div>
-                <h3 class="font-bold text-gray-800">Konfirmasi Hapus</h3>
-            </div>
-        </div>
-        
-        <div class="p-6">
-            <p class="text-gray-700 mb-2">Apakah Anda yakin ingin menghapus pertanyaan ini?</p>
-            <p id="deleteQuestionText" class="text-sm text-gray-500 italic bg-gray-50 p-3 rounded-lg"></p>
-            <p class="text-sm text-red-600 mt-3">
-                <i class="fas fa-info-circle"></i> Tindakan ini tidak dapat dibatalkan.
-            </p>
-        </div>
-        
-        <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3">
-            <button type="button" onclick="closeDeleteModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition">
-                Batal
-            </button>
-            <button type="button" onclick="confirmDelete()" class="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition">
-                <i class="fas fa-trash mr-2"></i>Hapus
-            </button>
-        </div>
-    </div>
-</div>
 
-<!-- Delete Category Modal -->
-<div id="deleteCategoryModal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center z-50">
-    <div class="bg-white rounded-xl shadow-lg w-full max-w-md mx-4 overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-100 bg-red-50">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center">
-                    <i class="fas fa-exclamation-triangle text-red-600 text-lg"></i>
-                </div>
-                <h3 class="font-bold text-gray-800">Konfirmasi Hapus Kategori</h3>
-            </div>
-        </div>
-        
-        <div class="p-6">
-            <p class="text-gray-700 mb-2">Apakah Anda yakin ingin menghapus kategori ini?</p>
-            <p id="deleteCategoryText" class="text-sm text-gray-500 italic bg-gray-50 p-3 rounded-lg"></p>
-            <p class="text-sm text-red-600 mt-3">
-                <i class="fas fa-info-circle"></i> Pertanyaan dalam kategori ini akan menjadi tanpa kategori.
-            </p>
-        </div>
-        
-        <div class="px-6 py-4 bg-gray-50 flex justify-end gap-3">
-            <button type="button" onclick="closeDeleteCategoryModal()" class="px-4 py-2 text-gray-600 hover:bg-gray-200 rounded-lg transition">
-                Batal
-            </button>
-            <button type="button" onclick="confirmDeleteCategory()" class="bg-red-600 text-white px-6 py-2 rounded-lg font-bold hover:bg-red-700 transition">
-                <i class="fas fa-trash mr-2"></i>Hapus
-            </button>
-        </div>
-    </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
 
 <script>
-    let deleteFormId = null;
-    let deleteCategoryFormId = null;
+    // let deleteFormId = null; // Removed
+    // let deleteCategoryFormId = null; // Removed
 
     function toggleOptions() {
         const type = document.getElementById('typeSelect').value;
@@ -651,26 +591,7 @@
         modal.classList.remove('flex');
     }
 
-    function openDeleteModal(questionId, questionText) {
-        deleteFormId = questionId;
-        document.getElementById('deleteQuestionText').textContent = questionText;
-        const modal = document.getElementById('deleteModal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-
-    function closeDeleteModal() {
-        const modal = document.getElementById('deleteModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        deleteFormId = null;
-    }
-
-    function confirmDelete() {
-        if (deleteFormId) {
-            document.getElementById('deleteForm' + deleteFormId).submit();
-        }
-    }
+    // Removed old delete modal functions
 
 
     window.openEditCategoryModal = function(category) {
@@ -718,26 +639,7 @@
     // Test if function is accessible
     console.log('openEditCategoryModal function loaded:', typeof window.openEditCategoryModal);
 
-    function openDeleteCategoryModal(categoryId, categoryName) {
-        deleteCategoryFormId = categoryId;
-        document.getElementById('deleteCategoryText').textContent = categoryName;
-        const modal = document.getElementById('deleteCategoryModal');
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-    }
-
-    function closeDeleteCategoryModal() {
-        const modal = document.getElementById('deleteCategoryModal');
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        deleteCategoryFormId = null;
-    }
-
-    function confirmDeleteCategory() {
-        if (deleteCategoryFormId) {
-            document.getElementById('deleteCategoryForm' + deleteCategoryFormId).submit();
-        }
-    }
+    // Removed old category delete modal functions
 
     // Listen for custom event to open category modal
     window.addEventListener('open-category-modal', function(e) {

@@ -77,8 +77,10 @@
                     $documents = $user->documents->keyBy('document_type');
                     $docTypes = [
                         'ktp' => 'KTP',
-                        'sim' => 'SIM',
-                        'certificate' => 'Sertifikat'
+                        'kk' => 'Kartu Keluarga (KK)',
+                        'ijazah' => 'Ijazah Terakhir',
+                        'str' => 'STR (Surat Tanda Registrasi)',
+                        'other' => 'Dokumen Lainnya'
                     ];
                 @endphp
 
@@ -191,7 +193,7 @@
 <div x-data="{ 
     open: {{ $errors->any() ? 'true' : 'false' }},
     paymentType: '{{ old('payment_type', $user->payoutDetail->payment_type ?? 'bank') }}',
-    tab: '{{ $errors->hasAny(['payment_type', 'provider_name', 'account_number', 'account_holder_name']) ? 'payment' : ($errors->hasAny(['document_ktp', 'document_sim', 'document_certificate']) ? 'documents' : ($errors->hasAny(['current_password', 'new_password']) ? 'password' : 'personal')) }}'
+    tab: '{{ $errors->hasAny(['payment_type', 'provider_name', 'account_number', 'account_holder_name']) ? 'payment' : ($errors->hasAny(['document_ktp', 'document_kk', 'document_ijazah', 'document_str', 'document_other']) ? 'documents' : ($errors->hasAny(['current_password', 'new_password']) ? 'password' : 'personal')) }}'
 }" 
 @open-profile-modal.window="open = true"
 @keydown.escape.window="open = false"
@@ -364,7 +366,13 @@ x-cloak>
                             </div>
 
                             <div class="space-y-4">
-                                @foreach(['ktp' => 'KTP (Kartu Tanda Penduduk)', 'sim' => 'SIM (Surat Izin Mengemudi)', 'certificate' => 'Sertifikat Keahlian'] as $key => $label)
+                                @foreach([
+                                    'ktp' => 'KTP (Kartu Tanda Penduduk)', 
+                                    'kk' => 'Kartu Keluarga (KK)', 
+                                    'ijazah' => 'Ijazah Terakhir',
+                                    'str' => 'STR (Surat Tanda Registrasi)',
+                                    'other' => 'Dokumen Lainnya'
+                                ] as $key => $label)
                                 <div class="border border-gray-200 rounded-xl p-4">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">{{ $label }}</label>
                                     <input type="file" name="document_{{ $key }}" accept=".jpg,.jpeg,.png,.pdf" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-teal-50 file:text-teal-700 hover:file:bg-teal-100 transition-colors">

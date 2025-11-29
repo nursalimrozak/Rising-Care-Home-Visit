@@ -65,12 +65,12 @@
                             <a href="{{ route('admin.bank-accounts.edit', $account) }}" class="text-blue-600 hover:text-blue-800 font-medium text-sm">
                                 <i class="fas fa-edit mr-1"></i> Edit
                             </a>
-                            <form action="{{ route('admin.bank-accounts.destroy', $account) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus rekening ini?')">
+                            <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $account->id }}', '{{ $account->bank_name }} - {{ $account->account_number }}', 'Hapus Rekening')" class="text-red-600 hover:text-red-800 font-medium text-sm">
+                                <i class="fas fa-trash mr-1"></i> Hapus
+                            </button>
+                            <form id="deleteForm{{ $account->id }}" action="{{ route('admin.bank-accounts.destroy', $account) }}" method="POST" class="hidden">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="text-red-600 hover:text-red-800 font-medium text-sm">
-                                    <i class="fas fa-trash mr-1"></i> Hapus
-                                </button>
                             </form>
                         </div>
                     </td>

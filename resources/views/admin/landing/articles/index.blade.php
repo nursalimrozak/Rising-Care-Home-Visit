@@ -83,6 +83,26 @@
                         {{ $article->published_at ? $article->published_at->format('d M Y') : '-' }}
                     </td>
                     <td class="px-6 py-4">
+                        <span class="px-2 py-1 text-xs font-medium rounded-full {{ $article->is_published ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800' }}">
+                            {{ $article->is_published ? 'Published' : 'Draft' }}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex items-center gap-2">
+                            <button onclick="openEditModal({{ $article->id }})" class="text-blue-600 hover:text-blue-800">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button type="button" onclick="openGlobalDeleteModal('deleteForm{{ $article->id }}', '{{ addslashes($article->title) }}', 'Hapus Artikel')" class="text-red-600 hover:text-red-800">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                            <form id="deleteForm{{ $article->id }}" action="{{ route('admin.landing.articles.destroy', $article->id) }}" method="POST" class="hidden">
+                                @csrf
+                                @method('DELETE')
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                @empty
                 <tr>
                     <td colspan="6" class="px-6 py-8 text-center text-gray-500">
                         Belum ada article yang ditambahkan
