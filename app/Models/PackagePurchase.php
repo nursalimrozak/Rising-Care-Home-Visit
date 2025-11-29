@@ -55,9 +55,9 @@ class PackagePurchase extends Model
     // Helper methods
     public function getRemainingVisits()
     {
-        // Calculate used visits dynamically based on completed treatments
-        // This fixes the issue where legacy data has used_visits=1 but no treatment is done
-        $realUsedVisits = $this->bookings()->whereIn('status', ['completed', 'pending_payment'])->count();
+        // Calculate used visits dynamically based on completed treatments only
+        // pending_payment means treatment is done but not yet finalized by petugas
+        $realUsedVisits = $this->bookings()->where('status', 'completed')->count();
         return $this->total_visits - $realUsedVisits;
     }
 

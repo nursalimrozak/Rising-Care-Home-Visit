@@ -42,8 +42,8 @@
                         <i class="fas fa-calendar-check mr-3 text-lg w-6 text-center"></i>
                         Booking Saya
                     </a>
-                    <a href="{{ route('petugas.bookings') }}?filter=today" class="group flex items-center px-2 py-2 text-base font-medium rounded-md text-gray-300 hover:bg-gray-700 hover:text-white">
-                        <i class="fas fa-clock mr-3 text-lg w-6 text-center"></i>
+                    <a href="{{ route('petugas.calendar') }}" class="group flex items-center px-2 py-2 text-base font-medium rounded-md {{ request()->routeIs('petugas.calendar') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }}">
+                        <i class="fas fa-calendar-alt mr-3 text-lg w-6 text-center"></i>
                         Jadwal Hari Ini
                     </a>
                     <a href="{{ route('petugas.commissions') }}" class="group flex items-center px-2 py-2 text-base font-medium rounded-md {{ request()->routeIs('petugas.commissions') ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white' }}">

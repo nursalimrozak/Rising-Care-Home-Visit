@@ -78,13 +78,13 @@ class PaymentController extends Controller
 
         // Update booking status if it was pending payment
         if ($payment->booking->status === 'pending_payment') {
-            // If booking has completed_at, it means treatment is done and this is final payment
-            if ($payment->booking->completed_at) {
-                $payment->booking->update(['status' => 'completed']);
-            } else {
-                // Otherwise it's initial payment
+            // Payment verified, but booking stays in pending_payment until petugas finalizes
+            // Only change to scheduled if this is initial payment (no completed_at yet)
+            if (!$payment->booking->completed_at) {
                 $payment->booking->update(['status' => 'scheduled']);
             }
+            // If completed_at exists, petugas has finished treatment
+            // Keep status as pending_payment until petugas clicks "Selesaikan Treatment" (finalize)
         }
 
         // Activate package if this is a full payment for a package

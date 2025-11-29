@@ -18,7 +18,7 @@ class DashboardController extends Controller
             'total_bookings_week' => Booking::whereBetween('created_at', [now()->startOfWeek(), now()->endOfWeek()])->count(),
             'total_bookings_month' => Booking::whereMonth('created_at', now()->month)->count(),
             'total_customers' => User::where('role', 'customer')->count(),
-            'pending_payments' => Payment::where('status', 'pending')->count(),
+            'pending_payments' => Payment::whereIn('status', ['pending', 'pending_verification'])->count(),
             'total_revenue_month' => Payment::where('status', 'paid')
                 ->whereMonth('paid_at', now()->month)
                 ->sum('total_amount'),
@@ -30,7 +30,7 @@ class DashboardController extends Controller
             ->get();
 
         $pendingPayments = Payment::with('booking.customer', 'booking.service')
-            ->where('status', 'pending')
+            ->whereIn('status', ['pending', 'pending_verification'])
             ->orderBy('created_at', 'desc')
             ->limit(5)
             ->get();

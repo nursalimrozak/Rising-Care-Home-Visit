@@ -33,6 +33,7 @@ class Booking extends Model
         'cancelled_at',
         'cancellation_reason',
         'duration_minutes',
+        'petugas_notes',
     ];
 
     protected function casts(): array

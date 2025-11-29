@@ -11,6 +11,24 @@
         </a>
     </div>
 
+    @if(session('success'))
+        <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-lg" role="alert">
+            <div class="flex items-center">
+                <i class="fas fa-check-circle mr-2"></i>
+                <p>{{ session('success') }}</p>
+            </div>
+        </div>
+    @endif
+
+    @if(session('error'))
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6 rounded-lg" role="alert">
+            <div class="flex items-center">
+                <i class="fas fa-exclamation-circle mr-2"></i>
+                <p>{{ session('error') }}</p>
+            </div>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <!-- Main Content -->
         <div class="lg:col-span-2 space-y-6">
@@ -215,7 +233,7 @@
             @endif
 
             <!-- Upload Payment Proof -->
-            @if($remainingAmount > 0 && $booking->status == 'completed')
+            @if($remainingAmount > 0 && ($booking->status == 'completed' || $booking->status == 'pending_payment'))
             <div class="bg-white rounded-xl shadow-sm p-6">
                 <h3 class="font-semibold text-gray-800 mb-4">Upload Bukti Transfer</h3>
                 <form action="{{ route('booking.upload-payment', $booking->booking_number) }}" method="POST" enctype="multipart/form-data">

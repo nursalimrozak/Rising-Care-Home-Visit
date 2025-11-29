@@ -275,10 +275,10 @@
             </div>
 
             {{-- Show payment form only if: 
-                1. No payment exists yet, OR
-                2. Package is paid but there are unpaid add-ons
+                1. No payment exists yet, AND
+                2. Package is NOT paid (if package is paid, we use the add-on specific form below)
             --}}
-            @if(!$booking->payment && (!$isPackagePaid || ($isPackagePaid && $totalAmount > 0)))
+            @if(!$booking->payment && !$isPackagePaid)
             <form action="{{ route('petugas.bookings.payment', $booking) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="space-y-4">
@@ -567,6 +567,27 @@
 
             <form action="{{ route('petugas.bookings.finalize', $booking) }}" method="POST">
                 @csrf
+                
+                @if(isset($previousNoteBooking) && $previousNoteBooking)
+                <div class="mb-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                    <h4 class="text-sm font-semibold text-blue-800 mb-1">
+                        <i class="fas fa-history mr-1"></i> Catatan Treatment Sebelumnya
+                    </h4>
+                    <p class="text-xs text-blue-600 mb-2">
+                        {{ $previousNoteBooking->completed_at ? $previousNoteBooking->completed_at->format('d M Y H:i') : '-' }}
+                        @if($previousNoteBooking->packagePurchase)
+                            (Paket {{ $previousNoteBooking->packagePurchase->package->name }})
+                        @endif
+                    </p>
+                    <p class="text-sm text-gray-700 italic">"{{ $previousNoteBooking->petugas_notes }}"</p>
+                </div>
+                @endif
+
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Catatan Treatment (Opsional)</label>
+                    <textarea name="petugas_notes" rows="3" class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-teal-500 focus:border-teal-500" placeholder="Tulis catatan hasil treatment untuk referensi kunjungan berikutnya..."></textarea>
+                </div>
+
                 <button type="submit" 
                     class="w-full px-4 py-2 rounded-lg font-bold text-lg shadow-lg transform transition hover:-translate-y-0.5 {{ $canFinalize ? 'bg-green-600 text-white hover:bg-green-700' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
                     {{ !$canFinalize ? 'disabled' : '' }}>

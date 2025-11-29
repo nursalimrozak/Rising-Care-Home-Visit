@@ -33,7 +33,15 @@ class BookingController extends Controller
         $availableAddons = ServiceAddon::where('is_active', true)->get();
         $bankAccounts = \App\Models\BankAccount::active()->ordered()->get();
         
-        return view('petugas.bookings.show', compact('booking', 'availableAddons', 'bankAccounts'));
+        // Fetch previous booking notes (latest completed booking for this customer)
+        $previousNoteBooking = Booking::where('customer_id', $booking->customer_id)
+            ->where('status', 'completed')
+            ->where('id', '!=', $booking->id)
+            ->whereNotNull('petugas_notes')
+            ->latest('completed_at')
+            ->first();
+
+        return view('petugas.bookings.show', compact('booking', 'availableAddons', 'bankAccounts', 'previousNoteBooking'));
     }
 
     public function checkin(Booking $booking)
@@ -140,13 +148,9 @@ class BookingController extends Controller
         // Determine next status
         $nextStatus = 'pending_payment';
         
-        // Check if package is paid and no addons
-        if ($booking->packagePurchase && in_array($booking->packagePurchase->status, ['active', 'completed'])) {
-            $hasAddons = $booking->bookingAddons()->count() > 0;
-            if (!$hasAddons) {
-                $nextStatus = 'completed';
-            }
-        }
+        // We always go to pending_payment first to allow adding add-ons
+        // The user must explicitly click "Selesaikan Treatment" (Finalize) to move to completed
+
 
         $booking->update([
             'status' => $nextStatus,
@@ -409,7 +413,8 @@ class BookingController extends Controller
 
         $booking->update([
             'status' => 'completed',
-            'completed_at' => now(), // Update completed_at again if needed
+            'completed_at' => now(),
+            'petugas_notes' => request('petugas_notes'),
         ]);
 
         return back()->with('success', 'Booking berhasil diselesaikan.');
@@ -432,5 +437,62 @@ class BookingController extends Controller
         $bookingAddon->delete();
 
         return back()->with('success', 'Add-on berhasil dihapus.');
+    }
+    public function calendar()
+    {
+        return view('petugas.bookings.calendar');
+    }
+
+    public function getEvents(Request $request)
+    {
+        $bookings = Booking::where('petugas_id', Auth::id())
+            ->with(['customer', 'service', 'packagePurchase.package'])
+            ->whereIn('status', ['scheduled', 'checked_in', 'in_progress', 'pending_payment', 'completed', 'cancelled'])
+            ->get();
+
+        $events = $bookings->map(function ($booking) {
+            $title = $booking->customer ? $booking->customer->name : 'Unknown Customer';
+            $serviceName = $booking->service ? $booking->service->name : 'Unknown Service';
+            
+            if ($booking->packagePurchase && $booking->packagePurchase->package) {
+                $serviceName .= ' - ' . $booking->packagePurchase->package->name;
+            }
+
+            $color = '#3B82F6'; // Default blue (scheduled)
+            switch ($booking->status) {
+                case 'checked_in': $color = '#2563EB'; break; // Darker blue
+                case 'in_progress': $color = '#9333EA'; break; // Purple
+                case 'pending_payment': $color = '#F59E0B'; break; // Orange
+                case 'completed': $color = '#10B981'; break; // Green
+                case 'cancelled': $color = '#EF4444'; break; // Red
+            }
+
+            // Combine date and time
+            $date = $booking->scheduled_date instanceof \Carbon\Carbon ? $booking->scheduled_date->format('Y-m-d') : $booking->scheduled_date;
+            $time = $booking->scheduled_time instanceof \Carbon\Carbon ? $booking->scheduled_time->format('H:i:s') : $booking->scheduled_time;
+            
+            $start = $date . 'T' . $time;
+            
+            // Calculate end time (default 1 hour if not set)
+            $end = \Carbon\Carbon::parse($start)->addMinutes($booking->duration_minutes ?: 60)->format('Y-m-d\TH:i:s');
+
+            return [
+                'id' => $booking->id,
+                'title' => $title . ' (' . $serviceName . ')',
+                'start' => $start,
+                'end' => $end,
+                'url' => route('petugas.bookings.show', $booking),
+                'backgroundColor' => $color,
+                'borderColor' => $color,
+                'textColor' => '#ffffff',
+                'extendedProps' => [
+                    'status' => ucfirst(str_replace('_', ' ', $booking->status)),
+                    'service' => $serviceName,
+                    'customer_name' => $booking->customer ? $booking->customer->name : 'Unknown'
+                ]
+            ];
+        });
+
+        return response()->json($events);
     }
 }

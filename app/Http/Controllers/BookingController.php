@@ -431,16 +431,29 @@ class BookingController extends Controller
             'payment_proof' => 'required|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
+        // Check for add-ons
+        $addonsTotal = $booking->bookingAddons->sum('subtotal');
+        $isAddonPayment = $addonsTotal > 0;
+
         // Get payment record
         $payment = $booking->payment;
         
-        if (!$payment) {
+        // If no payment record but we have add-ons, we can proceed (will create one)
+        if (!$payment && !$isAddonPayment) {
             return back()->with('error', 'Data pembayaran tidak ditemukan.');
         }
 
-        // Check if we can upload (Pending OR (DP Paid AND not yet verified full))
-        $canUpload = $payment->status == 'pending' || 
-                     ($payment->payment_type == 'dp' && $payment->status == 'paid');
+        // Check if we can upload
+        $canUpload = false;
+        if (!$payment) {
+            $canUpload = true; // New payment for add-ons
+        } else {
+            // Existing payment: allow if pending, or if DP paid (for settlement), or if paid but has unpaid add-ons
+            if ($payment->status == 'pending') $canUpload = true;
+            if ($payment->payment_type == 'dp' && $payment->status == 'paid') $canUpload = true;
+            if ($payment->status == 'paid' && $isAddonPayment && !$payment->addon_payment_proof) $canUpload = true;
+            if ($payment->status == 'pending_verification' && $isAddonPayment && !$payment->addon_payment_proof) $canUpload = true;
+        }
 
         if (!$canUpload) {
             return back()->with('error', 'Pembayaran tidak dapat diproses saat ini.');
@@ -452,25 +465,46 @@ class BookingController extends Controller
             $filename = 'payment_' . $booking->booking_number . '_' . time() . '.' . $file->getClientOriginalExtension();
             $path = $file->storeAs('payment_proofs', $filename, 'public');
 
-            // Update payment record
-            if ($payment->status == 'pending') {
-                // Initial Payment
-                $payment->update([
-                    'payment_proof' => $path,
+            if (!$payment) {
+                // Create new payment for add-ons
+                \App\Models\Payment::create([
+                    'booking_id' => $booking->id,
+                    'customer_id' => Auth::id(),
+                    'payment_method' => 'transfer',
+                    'payment_type' => 'addon',
+                    'subtotal' => 0,
+                    'total_amount' => $addonsTotal,
+                    'addon_payment_proof' => $path,
                     'status' => 'pending_verification',
                     'uploaded_by' => Auth::id(),
                 ]);
             } else {
-                // Final Payment (Pelunasan)
-                $payment->update([
-                    'final_payment_proof' => $path,
-                    'status' => 'pending_verification', // Set back to pending verification
+                // Update existing payment record
+                $updateData = [
                     'uploaded_by' => Auth::id(),
-                ]);
+                    'status' => 'pending_verification',
+                ];
+
+                // Determine which proof column to update
+                if ($isAddonPayment && ($payment->status == 'paid' || ($payment->payment_type == 'dp' && $payment->final_payment_proof))) {
+                    // If main payment is done, this is definitely for add-ons
+                    $updateData['addon_payment_proof'] = $path;
+                    // Ensure total amount includes add-ons if not already
+                    if ($payment->payment_type != 'addon') {
+                        $updateData['total_amount'] = $payment->subtotal + $addonsTotal;
+                    }
+                } elseif ($payment->payment_type == 'dp' && $payment->status == 'paid') {
+                    // Final settlement for DP
+                    $updateData['final_payment_proof'] = $path;
+                } else {
+                    // Initial payment or retry
+                    $updateData['payment_proof'] = $path;
+                }
+
+                $payment->update($updateData);
             }
         }
 
-        return redirect()->route('booking.show', $booking->booking_number)
-            ->with('success', 'Bukti pembayaran berhasil diupload. Menunggu verifikasi admin.');
+        return back()->with('success', 'Bukti pembayaran berhasil diupload. Menunggu verifikasi admin.');
     }
 }

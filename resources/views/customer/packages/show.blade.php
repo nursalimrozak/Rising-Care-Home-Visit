@@ -28,9 +28,9 @@
         <!-- Stats -->
         <div class="grid grid-cols-3 gap-4 p-6 border-b">
             @php
-                // Calculate used visits dynamically based on completed treatments
-                // This fixes the issue where legacy data has used_visits=1 but no treatment is done
-                $realUsedVisits = $packagePurchase->bookings->whereIn('status', ['completed', 'pending_payment'])->count();
+                // Calculate used visits dynamically based on completed treatments only
+                // pending_payment means treatment is done but not yet finalized by petugas
+                $realUsedVisits = $packagePurchase->bookings->where('status', 'completed')->count();
                 $remainingVisits = $packagePurchase->total_visits - $realUsedVisits;
             @endphp
             <div class="text-center p-4 bg-gray-50 rounded-lg">

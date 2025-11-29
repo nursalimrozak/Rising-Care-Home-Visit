@@ -152,6 +152,10 @@ Route::middleware(['auth', 'role:superadmin,admin_staff'])->prefix('admin')->nam
 Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
     Route::get('/dashboard', [\App\Http\Controllers\Petugas\DashboardController::class, 'index'])->name('dashboard');
     
+    // Calendar Routes
+    Route::get('/jadwal', [\App\Http\Controllers\Petugas\BookingController::class, 'calendar'])->name('calendar');
+    Route::get('/calendar/events', [\App\Http\Controllers\Petugas\BookingController::class, 'getEvents'])->name('calendar.events');
+
     Route::get('/bookings', [\App\Http\Controllers\Petugas\BookingController::class, 'index'])->name('bookings');
     Route::get('/bookings/{booking:booking_number}', [\App\Http\Controllers\Petugas\BookingController::class, 'show'])->name('bookings.show');
     Route::post('/bookings/{booking:booking_number}/checkin', [\App\Http\Controllers\Petugas\BookingController::class, 'checkin'])->name('bookings.checkin');

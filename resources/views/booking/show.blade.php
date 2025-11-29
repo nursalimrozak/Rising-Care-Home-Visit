@@ -165,6 +165,13 @@
                                     </div>
                                 </div>
                                 @if($booking->packagePurchase->expires_at)
+                                <div class="mt-2 text-xs text-gray-500">
+                                    Berlaku hingga: {{ $booking->packagePurchase->expires_at->format('d M Y') }}
+                                </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 @endif
 
@@ -330,9 +337,9 @@
 
                     <!-- Upload Payment Proof (hide if completed) -->
                     @if(!$isFullyPaid)
-                        @if($paymentStatus == 'pending')
+                        @if($paymentStatus == 'pending' || ($remainingAmount > 0 && ($booking->status == 'completed' || $booking->status == 'pending_payment')))
                         <div class="bg-white border border-gray-200 rounded-lg p-4">
-                            <h4 class="font-semibold text-gray-900 mb-3">Upload Bukti Transfer {{ ($booking->payment->payment_type == 'dp' && $booking->payment->paid_at == null) ? 'DP' : 'Pelunasan' }}</h4>
+                            <h4 class="font-semibold text-gray-900 mb-3">Upload Bukti Transfer {{ ($booking->payment->payment_type == 'dp' && $booking->payment->paid_at == null) ? 'DP' : 'Pelunasan / Add-ons' }}</h4>
                             <form action="{{ route('booking.upload-payment', $booking->booking_number) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="mb-3">
